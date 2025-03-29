@@ -33,7 +33,7 @@ export const authenticate = async (email, password) => {
       return null;
     }
     console.log(user);
-    console.log(user.password);
+    // console.log(user.password);
     
 
     if (user[0].password === password) {

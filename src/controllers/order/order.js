@@ -6,10 +6,15 @@ export const createOrder = async (req, reply) => {
   try {
     const { userId } = req.user;
     const { items, branch, totalPrice } = req.body;
+    // console.log(items, branch, totalPrice);
+    
     
 
     const customerData = await Customer.findById(userId);
     const branchData = await Branch.findById(branch);
+    // console.log("customerData", customerData);
+    // console.log("branchData", branchData);
+    
 
     if (!customerData) {
       return reply.status(404).send({ message: "Customer not found" });
@@ -20,7 +25,7 @@ export const createOrder = async (req, reply) => {
       items: items.map((item) => ({
         id: item.id,
         item: item.item,
-        cound: item.count,
+        count: item.count,
       })),
       branch,
       totalPrice,
@@ -35,6 +40,8 @@ export const createOrder = async (req, reply) => {
         address: branchData.address || "No address available",
       },
     });
+    // console.log("==> newOrder ", newOrder);
+    
 
     const savedOrder = await newOrder.save();
     return reply.status(201).send(savedOrder);

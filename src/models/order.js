@@ -78,6 +78,9 @@ async function getNextSequenceValue(sequenceName) {
 orderSchema.pre("save", async function (next) {
   if (this.isNew) {
     const sequenceValue = await getNextSequenceValue("orderID");
+    // console.log("sequenceValue", sequenceValue);
+    // console.log("sequenceValue type", typeof sequenceValue);
+    
     this.orderId = `ORDR${sequenceValue.toString().padStart(5, "0")}`;
   }
   next();

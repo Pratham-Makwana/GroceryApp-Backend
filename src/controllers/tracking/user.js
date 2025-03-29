@@ -2,12 +2,19 @@ import { Customer, DeliveryPartner } from "../../models/user.js";
 
 export const updateUser = async (req, reply) => {
   try {
-    const { userId } = req.userId;
+    const { userId } = req.user;
+    // console.log("userId", userId);
+
+    
+
     const updateData = req.body;
+
+    
 
     let user =
       (await Customer.findById(userId)) ||
       (await DeliveryPartner.findById(userId));
+    
 
     if (!user) {
       return reply.status(404).send({ message: "User not found" });

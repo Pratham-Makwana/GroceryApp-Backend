@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const counterSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  sequence_value: { type: String, default: 0 },
+  sequence_value: { type: Number, default: 0 },
 });
 
 const Counter = mongoose.model("Counter", counterSchema);

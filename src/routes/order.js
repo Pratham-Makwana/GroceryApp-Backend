@@ -10,8 +10,10 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 export const orderRoutes = async (fastify, options) => {
   fastify.addHook("preHandler", async (request, reply) => {
     const isAuthenticated = await verifyToken(request, reply);
+    console.log("isAuthenticated", isAuthenticated  );
+    
     if (!isAuthenticated) {
-      return reply.code(401).send({ message: "Unauthori zed" });
+      return reply.code(401).send({ message: "Unauthorized" });
     }
   });
 
