@@ -68,7 +68,9 @@ export const loginDeliveryPartner = async (req, reply) => {
       return reply.status(400).send({ message: "Invalid Credentials" });
     }
 
-    const { accessToken, refreshToken } = generateToken(deliveryPartner);
+    const { accessToken, refreshToken } = await generateToken(deliveryPartner);
+
+    
 
     return reply.send({
       message: "Login Successful",

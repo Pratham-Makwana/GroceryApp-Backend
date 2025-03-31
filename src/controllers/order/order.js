@@ -7,14 +7,11 @@ export const createOrder = async (req, reply) => {
     const { userId } = req.user;
     const { items, branch, totalPrice } = req.body;
     // console.log(items, branch, totalPrice);
-    
-    
 
     const customerData = await Customer.findById(userId);
     const branchData = await Branch.findById(branch);
     // console.log("customerData", customerData);
     // console.log("branchData", branchData);
-    
 
     if (!customerData) {
       return reply.status(404).send({ message: "Customer not found" });
@@ -41,9 +38,13 @@ export const createOrder = async (req, reply) => {
       },
     });
     // console.log("==> newOrder ", newOrder);
-    
 
-    const savedOrder = await newOrder.save();
+    let savedOrder = await newOrder.save();
+    savedOrder = await savedOrder.populate([
+      { path: "items.item" },
+    ]);
+    console.log("==> saveOrder", savedOrder);
+
     return reply.status(201).send(savedOrder);
   } catch (error) {
     console.log(error);
@@ -116,7 +117,7 @@ export const updateOrderStatus = async (req, reply) => {
 
     order.status = status;
     order.deliveryLocation = deliveryPersonLocation;
-    await order.status();
+    await order.save();
 
     // Realtime update to the user using server.io
     req.server.io.to(orderId).emit("liveTrackingupdates", order);
@@ -156,22 +157,21 @@ export const getOrders = async (req, reply) => {
   }
 };
 
-
 export const getOrderById = async (req, reply) => {
-    try {
-        const {orderId} = req.params
+  try {
+    const { orderId } = req.params;
 
-        const order = await Order.findById(orderId).populate(
-            "customer branch items.item deliveryPartner"
-        )
+    const order = await Order.findById(orderId).populate(
+      "customer branch items.item deliveryPartner"
+    );
 
-        if(!order){
-            return reply.status(404).send({message : "Order not found"})
-        }
-
-        return reply.send(order)
-    } catch (error) {
-        console.log(error);
-        return reply.status(500).send({ message: "Failed to create order", error });
+    if (!order) {
+      return reply.status(404).send({ message: "Order not found" });
     }
-}
+
+    return reply.send(order);
+  } catch (error) {
+    console.log(error);
+    return reply.status(500).send({ message: "Failed to create order", error });
+  }
+};
