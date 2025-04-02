@@ -77,7 +77,7 @@ export const confirmOrder = async (req, reply) => {
     order.deliveryPersonLocation = {
       latitude: deliveryPersonLocation?.latitude,
       longitude: deliveryPersonLocation?.longitude,
-      address: deliveryPersonLocation.address || "",
+      address: deliveryPersonLocation?.address || "",
     };
 
     req.server.io.to(orderId).emit("orderConfirmed", order);
@@ -145,6 +145,8 @@ export const getOrders = async (req, reply) => {
       query.deliveryPartner = deliveryPartnerId;
       query.branch = branchId;
     }
+    console.log(query);
+    
 
     const orders = await Order.find(query).populate(
       "customer branch items.item deliveryPartner"
